@@ -39,6 +39,21 @@ typedef enum _sai_lag_attr_t {
     SAI_LAG_ATTR_PORT_LIST,
 } sai_lag_attr_t;
 
+/*LAG Port forwarding mode */
+typedef enum _sai_lag_port_mode_t {
+
+    /** Port forwards and receives traffic as part of LAG. */
+    SAI_LAG_PORT_MODE_FORWARD,
+
+    /** Disable traffic distribution to this port as part of LAG. */
+    SAI_LAG_PORT_MODE_EGRESS_DISABLE,
+
+    /** Disable traffic collection from this port as part of LAG. */
+    SAI_LAG_PORT_MODE_INGRESS_DISABLE
+
+} sai_lag_port_mode_t;
+
+
 /*
     \brief Create LAG
     \param[out] lag_id LAG id
@@ -116,6 +131,38 @@ typedef sai_status_t (*sai_get_lag_attribute_fn)(
     _Inout_ sai_attribute_t *attr_list
     );
 
+/*
+    \brief Set LAG Port mode
+    \param[in] lag_id LAG id
+    \param[in] count Number of ports in the port_list
+    \param[in] port_list List of Port Identifiers
+    \param[in] lag_port_mode_list List of lag port modes set for the ports in port_list
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+typedef sai_status_t (*sai_lag_port_mode_set_fn)(
+    _In_ sai_object_id_t lag_id,
+    _In_ uint32_t count,
+    _In_ const sai_object_id_t *port_list,
+    _In_ const sai_lag_port_mode_t *lag_port_mode_list
+    );
+
+/*
+    \brief Get LAG Port mode
+    \param[in] lag_id LAG id
+    \param[in] count Number of ports in the port_list
+    \param[in] port_list List of Port Identifiers
+    \param[out] lag_port_mode_list List of lag port modes obtained for the ports in port_list
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+typedef sai_status_t (*sai_lag_port_mode_get_fn)(
+    _In_ sai_object_id_t lag_id,
+    _In_ uint32_t count,
+    _In_ const sai_object_id_t *port_list,
+    _Out_ sai_lag_port_mode_t *lag_port_mode_list
+    );
+
 /**
  * @brief LAG methods table retrieved with sai_api_query()
  */
@@ -127,6 +174,8 @@ typedef struct _sai_lag_api_t
    sai_get_lag_attribute_fn        get_lag_attribute;
    sai_add_ports_to_lag_fn         add_ports_to_lag;
    sai_remove_ports_from_lag_fn    remove_ports_from_lag;
+   sai_lag_port_mode_set_fn        lag_port_mode_set;
+   sai_lag_port_mode_get_fn        lag_port_mode_get;
 }sai_lag_api_t;
 
 /**
