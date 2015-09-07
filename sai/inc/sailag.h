@@ -46,7 +46,7 @@ typedef enum _sai_lag_attr_t {
     \param[in] attr_count number of attributes
     \param[in] attr_list array of attributes
     \return Success: SAI_STATUS_SUCCESS
-	    Failure: Failure status code on error
+            Failure: Failure status code on error
 */
 typedef sai_status_t(*sai_create_lag_fn)(
     _Out_ sai_object_id_t* lag_id,
@@ -58,7 +58,7 @@ typedef sai_status_t(*sai_create_lag_fn)(
     \brief Remove LAG
     \param[in] lag_id LAG id
     \return Success: SAI_STATUS_SUCCESS
-	    Failure: Failure status code on error
+            Failure: Failure status code on error
 */
 typedef sai_status_t(*sai_remove_lag_fn)(
     _In_ sai_object_id_t  lag_id
@@ -69,7 +69,7 @@ typedef sai_status_t(*sai_remove_lag_fn)(
     \param[in] lag_id LAG id
     \param[in] attr Structure containing ID and value to be set
     \return Success: SAI_STATUS_SUCCESS
-	    Failure: Failure status code on error
+            Failure: Failure status code on error
 */
 typedef sai_status_t (*sai_set_lag_attribute_fn)(
     _In_ sai_object_id_t  lag_id,
@@ -82,7 +82,7 @@ typedef sai_status_t (*sai_set_lag_attribute_fn)(
     \param[in] attr_count Number of attributes to be get
     \param[in,out] attr_list List of structures containing ID and value to be get
     \return Success: SAI_STATUS_SUCCESS
-	    Failure: Failure status code on error
+            Failure: Failure status code on error
 */
 
 typedef sai_status_t (*sai_get_lag_attribute_fn)(
@@ -97,17 +97,22 @@ typedef sai_status_t (*sai_get_lag_attribute_fn)(
  */
 typedef enum _sai_lag_member_attr_t {
 
+    /** READ_WRITE */
+
     /* lag ID [sai_object_id_t] (MANDATORY_ON_CREATE|CREATE_ONLY) */
-    SAI_LAG_MEMBER_ATTR_lag_member_id;
+    SAI_LAG_MEMBER_ATTR_LAG_ID,
 
     /* logical port ID [sai_object_id_t] (MANDATORY_ON_CREATE|CREATE_ONLY) */
-    SAI_LAG_MEMBER_ATTR_PORT_ID;
+    SAI_LAG_MEMBER_ATTR_PORT_ID,
 
      /* Disable traffic distribution to this port as part of LAG. [bool] (CREATE_AND_SET) default to FALSE */
-    SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE;
+    SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE,
 
      /* Disable traffic collection from this port as part of LAG. [bool] (CREATE_AND_SET) default to FALSE. */
-    SAI_LAG_MEMBER_ATTR_INGRESS_DISABLE;
+    SAI_LAG_MEMBER_ATTR_INGRESS_DISABLE,
+
+    /** Custom range base value */
+    SAI_LAG_ATTR_CUSTOM_RANGE_BASE  = 0x10000000
 
 } sai_lag_member_attr_t;
 

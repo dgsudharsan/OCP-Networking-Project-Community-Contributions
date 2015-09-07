@@ -223,21 +223,6 @@ typedef struct _sai_vlan_port_list_t {
 
 } sai_vlan_port_list_t;
 
-typedef struct _sai_lag_port_mode_t sai_lag_port_mode_t;
-
-/**
- * @brief Defines a LAG port list datastructure
- */
-typedef struct _sai_lag_port_mode_list_t {
-
-    /** Number of ports */
-    uint32_t count;
-
-    /** List of lag port modes */
-    sai_lag_port_mode_t *list;
-
-} sai_lag_port_mode_list_t;
-
 typedef enum _sai_ip_addr_family_t {
     SAI_IP_ADDR_FAMILY_IPV4,
 
@@ -465,7 +450,6 @@ typedef union {
     sai_s32_range_t s32range;
     sai_vlan_list_t vlanlist;
     sai_vlan_port_list_t vlanportlist;
-    sai_lag_port_mode_list_t lagportmodelist;
     sai_acl_field_data_t aclfield;
     sai_acl_action_data_t aclaction;
     sai_port_breakout_t portbreakout;
