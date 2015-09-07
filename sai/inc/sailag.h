@@ -35,40 +35,10 @@ typedef enum _sai_lag_attr_t {
 
     /** READ_WRITE */
 
-    /** SAI port list [sai_object_list_t] (CREATE_AND_SET) */
-    SAI_LAG_ATTR_PORT_LIST,
-
-    /** SAI port mode list [sai_lag_port_mode_list_t] (CREATE_AND_SET) */
-    SAI_LAG_ATTR_PORT_MODE_LIST
+    /** Custom range base value */
+    SAI_LAG_ATTR_CUSTOM_RANGE_BASE  = 0x10000000
 
 } sai_lag_attr_t;
-
-/**
- *  @brief List of LAG Port member modes
- */
-typedef enum _sai_lag_port_member_mode_t {
-
-    /** Port forwards and receives traffic as part of LAG. */
-    SAI_LAG_PORT_MEMBER_MODE_FORWARD,
-
-    /** Disable traffic distribution to this port as part of LAG. */
-    SAI_LAG_PORT_MEMBER_MODE_EGRESS_DISABLE,
-
-    /** Disable traffic collection from this port as part of LAG. */
-    SAI_LAG_PORT_MEMBER_MODE_INGRESS_DISABLE
-
-} sai_lag_port_member_mode_t;
-
-/**
- *   @brief LAG Port/Mode membership structure
- */
-typedef struct _sai_lag_port_mode_t {
-
-    sai_object_id_t port_id;
-
-    sai_lag_port_member_mode_t mode;
-
-} sai_lag_port_mode_t;
 
 /*
     \brief Create LAG
@@ -76,7 +46,7 @@ typedef struct _sai_lag_port_mode_t {
     \param[in] attr_count number of attributes
     \param[in] attr_list array of attributes
     \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
+	    Failure: Failure status code on error
 */
 typedef sai_status_t(*sai_create_lag_fn)(
     _Out_ sai_object_id_t* lag_id,
@@ -88,36 +58,10 @@ typedef sai_status_t(*sai_create_lag_fn)(
     \brief Remove LAG
     \param[in] lag_id LAG id
     \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
+	    Failure: Failure status code on error
 */
 typedef sai_status_t(*sai_remove_lag_fn)(
     _In_ sai_object_id_t  lag_id
-    );
-
-/*
-    \brief Add ports to LAG.
-    \param[in] lag_id LAG id
-    \param[in] port_count number of ports
-    \param[in] port_list pointer to membership structures
-    \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
-*/
-typedef sai_status_t (*sai_add_ports_to_lag_fn)(
-    _In_ sai_object_id_t lag_id,
-    _In_ const sai_object_list_t *port_list
-    );
-
-/*
-    \brief Remove ports from LAG.
-    \param[in] lag_id LAG id
-    \param[in] port_count number of ports
-    \param[in] port_list pointer to membership structures
-    \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
-*/
-typedef sai_status_t (*sai_remove_ports_from_lag_fn)(
-    _In_ sai_object_id_t lag_id,
-    _In_ const sai_object_list_t *port_list
     );
 
 /*
@@ -125,7 +69,7 @@ typedef sai_status_t (*sai_remove_ports_from_lag_fn)(
     \param[in] lag_id LAG id
     \param[in] attr Structure containing ID and value to be set
     \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
+	    Failure: Failure status code on error
 */
 typedef sai_status_t (*sai_set_lag_attribute_fn)(
     _In_ sai_object_id_t  lag_id,
@@ -138,11 +82,83 @@ typedef sai_status_t (*sai_set_lag_attribute_fn)(
     \param[in] attr_count Number of attributes to be get
     \param[in,out] attr_list List of structures containing ID and value to be get
     \return Success: SAI_STATUS_SUCCESS
-            Failure: Failure status code on error
+	    Failure: Failure status code on error
 */
 
 typedef sai_status_t (*sai_get_lag_attribute_fn)(
     _In_ sai_object_id_t lag_id,
+    _In_ uint32_t attr_count,
+    _Inout_ sai_attribute_t *attr_list
+    );
+
+
+/**
+ *  @brief List of LAG Port member modes
+ */
+typedef enum _sai_lag_member_attr_t {
+
+    /* lag ID [sai_object_id_t] (MANDATORY_ON_CREATE|CREATE_ONLY) */
+    SAI_LAG_MEMBER_ATTR_lag_member_id;
+
+    /* logical port ID [sai_object_id_t] (MANDATORY_ON_CREATE|CREATE_ONLY) */
+    SAI_LAG_MEMBER_ATTR_PORT_ID;
+
+     /* Disable traffic distribution to this port as part of LAG. [bool] (CREATE_AND_SET) default to FALSE */
+    SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE;
+
+     /* Disable traffic collection from this port as part of LAG. [bool] (CREATE_AND_SET) default to FALSE. */
+    SAI_LAG_MEMBER_ATTR_INGRESS_DISABLE;
+
+} sai_lag_member_attr_t;
+
+/*
+    \brief Create LAG Member
+    \param[out] lag_member_id LAG Member id
+    \param[in] attr_count number of attributes
+    \param[in] attr_list array of attributes
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+typedef sai_status_t(*sai_create_lag_member_fn)(
+    _Out_ sai_object_id_t* lag_member_id,
+    _In_ uint32_t attr_count,
+    _In_ sai_attribute_t *attr_list
+    );
+
+/*
+    \brief Remove LAG Member
+    \param[in] lag_member_id LAG Member id
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+typedef sai_status_t(*sai_remove_member_lag_fn)(
+    _In_ sai_object_id_t  lag_member_id
+    );
+
+
+/*
+    \brief Set LAG Member Attribute
+    \param[in] lag_member_id LAG Member id
+    \param[in] attr Structure containing ID and value to be set
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+typedef sai_status_t (*sai_set_lag_member_attribute_fn)(
+    _In_ sai_object_id_t  lag_member_id,
+    _In_ const sai_attribute_t *attr
+    );
+
+/*
+    \brief Get LAG Member Attribute
+    \param[in] lag_member_id LAG Member id
+    \param[in] attr_count Number of attributes to be get
+    \param[in,out] attr_list List of structures containing ID and value to be get
+    \return Success: SAI_STATUS_SUCCESS
+            Failure: Failure status code on error
+*/
+
+typedef sai_status_t (*sai_get_lag_member_attribute_fn)(
+    _In_ sai_object_id_t lag_member_id,
     _In_ uint32_t attr_count,
     _Inout_ sai_attribute_t *attr_list
     );
@@ -152,12 +168,14 @@ typedef sai_status_t (*sai_get_lag_attribute_fn)(
  */
 typedef struct _sai_lag_api_t
 {
-   sai_create_lag_fn               create_lag;
-   sai_remove_lag_fn               remove_lag;
-   sai_set_lag_attribute_fn        set_lag_attribute;
-   sai_get_lag_attribute_fn        get_lag_attribute;
-   sai_add_ports_to_lag_fn         add_ports_to_lag;
-   sai_remove_ports_from_lag_fn    remove_ports_from_lag;
+   sai_create_lag_fn                create_lag;
+   sai_remove_lag_fn                remove_lag;
+   sai_set_lag_attribute_fn         set_lag_attribute;
+   sai_get_lag_attribute_fn         get_lag_attribute;
+   sai_create_lag_member_fn         create_lag_member;
+   sai_remove_lag_member_fn         remove_lag_member;
+   sai_set_lag_member_attribute_fn  set_lag_member_attribute;
+   sai_get_lag_member_attribute_fn  get_lag_member_attribute;
 }sai_lag_api_t;
 
 /**
